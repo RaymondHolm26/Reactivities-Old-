@@ -1,11 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "semantic-ui-react";
 import { Activity } from "../models/activity";
 import NavBar from "./NavBar";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
 import { v4 as uuid } from "uuid";
-import LoadingComponent from "./LoadingComponents";
 import agent from "../api/agent";
+import LoadingComponent from "./LoadingComponents";
 
 function App() {
   const [activities, setActivities] = useState<Activity[]>([]);
