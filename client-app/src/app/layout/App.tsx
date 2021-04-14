@@ -4,8 +4,8 @@ import { Activity } from "../models/activity";
 import NavBar from "./NavBar";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
 import { v4 as uuid } from "uuid";
-import agent from "../api/Agent";
 import LoadingComponent from "./LoadingComponents";
+import agent from "../api/agent";
 
 function App() {
   const [activities, setActivities] = useState<Activity[]>([]);

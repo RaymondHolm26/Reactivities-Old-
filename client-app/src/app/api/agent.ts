@@ -1,5 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { resolve6 } from 'node:dns';
+import axios, { AxiosResponse } from 'axios';
 import { Activity } from '../models/activity';
 
 const sleep = (delay: number) => {
