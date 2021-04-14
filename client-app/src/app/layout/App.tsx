@@ -58,7 +58,7 @@ function App() {
         setSubmitting(false);
       });
     } else {
-      activity.id == uuid();
+      activity.id = uuid();
       agent.Activities.create(activity).then(() => {
         setActivities([...activities, activity]);
         setSelectedActivity(activity);
