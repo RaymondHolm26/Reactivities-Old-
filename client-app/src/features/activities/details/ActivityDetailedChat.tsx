@@ -2,26 +2,26 @@ import { Formik, Form, Field, FieldProps } from "formik";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Segment, Header, Comment, Loader } from "semantic-ui-react";
+import { Segment, Header, Comment, Loader, Grid } from "semantic-ui-react";
 import { useStore } from "../../../app/stores/store";
 import * as Yup from "yup";
 import { formatDistanceToNow } from "date-fns";
+import { Activity } from "../../../app/models/activity";
 
 interface Props {
-  activityId: string;
+  activity: Activity;
 }
 
-export default observer(function ActivityDetailedChat({ activityId }: Props) {
-  const { commentStore } = useStore();
-
+export default observer(function ActivityDetailedChat({ activity }: Props) {
+  const { commentStore, userStore } = useStore();
   useEffect(() => {
-    if (activityId) {
-      commentStore.createHubConnection(activityId);
+    if (activity.id) {
+      commentStore.createHubConnection(activity.id);
     }
     return () => {
       commentStore.clearComments();
     };
-  }, [commentStore, activityId]);
+  }, [commentStore, activity.id]);
 
   return (
     <>
@@ -69,22 +69,89 @@ export default observer(function ActivityDetailedChat({ activityId }: Props) {
           )}
         </Formik>
         <Comment.Group>
-          {commentStore.comments.map((comment) => (
-            <Comment key={comment.id}>
-              <Comment.Avatar src={comment.image || "/assets/user.png"} />
-              <Comment.Content>
-                <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
-                  {comment.displayName}
-                </Comment.Author>
-                <Comment.Metadata>
-                  <div>{formatDistanceToNow(comment.createdAt)} ago</div>
-                </Comment.Metadata>
-                <Comment.Text style={{ whiteSpace: "pre-wrap" }}>
-                  {comment.body}
-                </Comment.Text>
-              </Comment.Content>
-            </Comment>
-          ))}
+          {commentStore.comments.map((comment) => {
+            return userStore.user?.displayName !== comment.displayName ? (
+              <Grid celled="internally">
+                <Grid.Column width={6}></Grid.Column>
+                <Grid.Column width={10}>
+                  <Comment
+                    key={comment.id}
+                    style={{
+                      borderRadius: "10px",
+                      border: "1px solid #EAEAEA",
+                      padding: "5px",
+                    }}
+                    className="commentColor"
+                  >
+                    <Comment.Avatar
+                      as={Link}
+                      to={`/profiles/${comment.username}`}
+                      src={comment.image || "/assets/user.png"}
+                      style={{
+                        border: "1px solid",
+                        borderColor: "#fff",
+                        borderRadius: "5px",
+                      }}
+                    />
+                    <Comment.Content>
+                      <Comment.Author
+                        as={Link}
+                        to={`/profiles/${comment.username}`}
+                        style={{ color: "white" }}
+                      >
+                        {comment.displayName}
+                      </Comment.Author>
+                      <Comment.Metadata>
+                        <div style={{ color: "white" }}>
+                          {formatDistanceToNow(comment.createdAt)} ago
+                        </div>
+                      </Comment.Metadata>
+                      <Comment.Text
+                        style={{ whiteSpace: "pre-wrap", color: "white" }}
+                      >
+                        {comment.body}
+                      </Comment.Text>
+                    </Comment.Content>
+                  </Comment>
+                </Grid.Column>
+              </Grid>
+            ) : (
+              <Grid celled="internally">
+                <Grid.Column width={10}>
+                  <Comment
+                    key={comment.id}
+                    style={{
+                      backgroundColor: "#F4F4F4",
+                      borderRadius: "10px",
+                      border: "1px solid #EAEAEA",
+                      padding: "5px",
+                    }}
+                  >
+                    <Comment.Avatar
+                      as={Link}
+                      to={`/profiles/${comment.username}`}
+                      src={comment.image || "/assets/user.png"}
+                    />
+                    <Comment.Content>
+                      <Comment.Author
+                        as={Link}
+                        to={`/profiles/${comment.username}`}
+                      >
+                        {comment.displayName}
+                      </Comment.Author>
+                      <Comment.Metadata>
+                        <div>{formatDistanceToNow(comment.createdAt)} ago</div>
+                      </Comment.Metadata>
+                      <Comment.Text style={{ whiteSpace: "pre-wrap" }}>
+                        {comment.body}
+                      </Comment.Text>
+                    </Comment.Content>
+                  </Comment>
+                </Grid.Column>
+                <Grid.Column width={6}></Grid.Column>
+              </Grid>
+            );
+          })}
         </Comment.Group>
       </Segment>
     </>
